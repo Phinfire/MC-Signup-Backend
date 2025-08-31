@@ -1,5 +1,7 @@
 import express, { Request, Response } from 'express';
-import { getPickCounts } from '../db/registrations';
+import { getPickCounts, getAllSignups } from '../db/registrations';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const router = express.Router();
 

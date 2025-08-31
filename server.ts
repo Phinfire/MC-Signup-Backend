@@ -3,10 +3,13 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import { PORT, allowedOrigins } from './config';
 import authRoutes from './routes/auth';
-import registerRoutes from './routes/register';
+import registerRoutes from './routes/signup';
 import healthRoutes from './routes/health';
 import signups from './routes/signups';
-import { createRegistrationsTable } from './db/registrations';
+import userRoutes from './routes/getUser';
+import getSignupRoutes from './routes/getSignup';
+import userPostRoutes from './routes/user';
+import adminSignupsRoutes from './routes/adminSignups';
 
 const app = express();
 
@@ -20,12 +23,14 @@ app.use(cors({
     }
 }));
 app.use(bodyParser.json());
-
-createRegistrationsTable().catch(console.error);
-
 app.use('/api/auth', authRoutes);
-app.use('/api/register', registerRoutes);
+app.use("/api/user", userRoutes);
+app.use('/api/signup', registerRoutes);
 app.use('/api/health', healthRoutes);
 app.use('/api/signups', signups);
+app.use('/api/getsignup', getSignupRoutes);
+app.use('/api/userpost', userPostRoutes);
+app.use(adminSignupsRoutes);
 
 app.listen(PORT, () => console.log(`Discord OAuth backend running on port ${PORT}`));
+
