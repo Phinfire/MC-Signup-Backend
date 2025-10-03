@@ -1,5 +1,6 @@
 export interface StartAssignment {
     discord_id: string;
     region_key: string;
-    province_key: string | null;
+    start_key: string | null;
+    start_data: object | null;
 }

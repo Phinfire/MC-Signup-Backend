@@ -12,9 +12,18 @@ export async function createSignupsTable() {
     `);
 }
 
-export async function getAllSignups(): Promise<Signup[]> {
+export async function getAllSignups(latestOnly: boolean = false): Promise<Signup[]> {
     await createSignupsTable();
-    const result = await pool.query('SELECT * FROM signups');
+    let result;
+    if (latestOnly) {
+        result = await pool.query(`
+            SELECT DISTINCT ON (discord_id) *
+            FROM signups
+            ORDER BY discord_id, timestamp DESC
+        `);
+    } else {
+        result = await pool.query('SELECT * FROM signups');
+    }
     return result.rows.map((row: {
         id: number;
         discord_id: string;
@@ -73,4 +82,13 @@ export async function getUserPicks(userId: string): Promise<string[]> {
     );
     if (result.rows.length === 0) return [];
     return JSON.parse(result.rows[0].picks);
+}
+
+export async function removeSignup(userId: string): Promise<boolean> {
+    await createSignupsTable();
+    const result = await pool.query(
+        'DELETE FROM signups WHERE discord_id = $1',
+        [userId]
+    );
+    return (result.rowCount ?? 0) > 0;
 }

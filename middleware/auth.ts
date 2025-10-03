@@ -24,7 +24,7 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
         (req as any).jwtPayload = payload;
         next();
     } catch {
-        return res.status(401).json({ error: 'Invalid token' });
+        return res.status(401).json({ error: "Invalid token (" + token + ")" });
     }
 };
 
@@ -33,7 +33,7 @@ export function requireAdminAuth(req: Request, res: Response, next: NextFunction
     authenticateToken(req, res, () => {
         const discordId = req.user?.discordId;
         if (!discordId || discordId !== ADMIN_DISCORD_ID) {
-            return res.status(403).json({ error: 'Forbidden: Invalid discordId' });
+            return res.status(403).json({ error: 'Forbidden: Invalid discordId (' + discordId + ') is not admin' });
         }
         next();
     });
@@ -41,9 +41,10 @@ export function requireAdminAuth(req: Request, res: Response, next: NextFunction
 
 export function requireModeratorAuth(req: Request, res: Response, next: NextFunction) {
     authenticateToken(req, res, () => {
+        console.log('Moderator access to', req.path, "with discordId", req.user?.discordId);
         const discordId = req.user?.discordId;
         if (!discordId || (!MODERATOR_IDS.includes(discordId) && discordId !== ADMIN_DISCORD_ID)) {
-            return res.status(403).json({ error: 'Forbidden: Invalid discordId' });
+            return res.status(403).json({ error: 'Forbidden: Invalid discordId (' + discordId + ') neither admin nor moderator' });
         }
         next();
     });

@@ -1,16 +1,17 @@
 import express, { Request, Response } from 'express';
-import { getAssignmentsForAllSignedUpUsers, updateAssignments } from "../../middleware/assignments";
+import { updateAssignments } from "../../db/assignments";
 import { requireModeratorAuth } from '../../middleware/auth';
 
 const router = express.Router();
 
-router.get('/', requireModeratorAuth, async (req: Request, res: Response) => {
+router.post('/', requireModeratorAuth, async (req: Request, res: Response) => {
     try {
         const { assignments } = req.body;
         if (!Array.isArray(assignments) || !assignments.every(a =>
             typeof a.discord_id === 'string' &&
             typeof a.region_key === 'string' &&
-            (typeof a.province_key === 'string' || a.province_key === null)
+            (typeof a.start_key === 'string' || a.start_key === null) &&
+            (typeof a.start_data === 'object' || a.start_data === null)
         )) {
             return res.status(400).json({ error: 'Invalid assignments format' });
         }

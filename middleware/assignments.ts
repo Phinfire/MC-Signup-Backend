@@ -15,7 +15,7 @@ export async function getAssignmentsForAllSignedUpUsers() {
             result.push({
                 discord_id: signup.discord_id,
                 region_key: assignment.region_key,
-                province_key: assignment.province_key,
+                province_key: assignment.start_key,
             });
         } else {
             result.push({
@@ -28,19 +28,8 @@ export async function getAssignmentsForAllSignedUpUsers() {
     return result;
 }
 
-export async function getAssignmentsForUser(discordId: string) {
+export async function getAssignmentForUser(discordId: string) {
     const allAssignments = await getAllAssignments();
-    return allAssignments.filter(assignment => assignment.discord_id === discordId);
-}
-
-export async function updateAssignments(assignments: StartAssignment[]) {
-    for (const assignment of assignments) {
-        await pool.query(
-            `INSERT INTO start_assignments (discord_id, region_key, province_key)
-             VALUES ($1, $2, $3)
-             ON CONFLICT (discord_id)
-             DO UPDATE SET region_key = EXCLUDED.region_key, province_key = EXCLUDED.province_key`,
-            [assignment.discord_id, assignment.region_key, assignment.province_key]
-        );
-    }
+    const assignments = allAssignments.filter(assignment => assignment.discord_id === discordId);
+    return assignments.length > 0 ? assignments[0] : null;
 }
