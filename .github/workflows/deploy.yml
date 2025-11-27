@@ -66,9 +66,12 @@ jobs:
           POSTGRES_USER=${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DB=${{ secrets.POSTGRES_DB }}
-          DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }}
+          JWT_SECRET=${{ secrets.JWT_SECRET }}
+          DISCORD_CLIENT_ID=${{ vars.DISCORD_CLIENT_ID }}
+          DISCORD_CLIENT_SECRET=${{ secrets.DISCORD_CLIENT_SECRET }}
           API_PORT=${{ secrets.API_PORT || 8000 }}
           PORT=${{ secrets.PORT || 3000 }}
+          ALLOWED_ORIGIN=${{ vars.ALLOWED_ORIGIN }}
           EOF
           
           # Pull latest image and deploy
