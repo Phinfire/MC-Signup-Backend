@@ -26,15 +26,6 @@ router.get('/signups/detailed', requireModeratorAuth, asyncHandler(async (req: R
 }));
 
 /**
- * GET /api/moderator/assignments
- * Get all assignments for signed up users (public access)
- */
-router.get('/assignments', asyncHandler(async (req: Request, res: Response) => {
-    const assignments = await getAssignmentsForAllSignedUpUsers();
-    res.json({ assignments });
-}));
-
-/**
  * POST /api/moderator/assignments
  * Bulk update assignments
  */

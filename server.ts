@@ -1,13 +1,15 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import { PORT, allowedOrigins, ADMIN_DISCORD_ID, MODERATOR_IDS } from './config';
+import { PORT, allowedOrigins } from './config';
 import authRoutes from './routes/auth';
 import signupRoutes from './routes/signup';
 import healthRoutes from './routes/health';
 import userRoutes from './routes/user';
 import adminRoutes from './routes/admin/signups';
 import moderatorRoutes from './routes/moderator';
+import megacampaignsRoutes from './routes/megacampaigns';
+import { seedMegacampaigns } from './db/seed';
 
 const app = express();
 
@@ -22,13 +24,17 @@ app.use(cors({
 }));
 app.use(bodyParser.json());
 
-// Routes
+
 app.use('/api/auth', authRoutes);
 app.use('/api/signup', signupRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/health', healthRoutes);
+app.use('/api/megacampaigns', megacampaignsRoutes);
 app.use('/api/admin/signups', adminRoutes);
 app.use('/api/moderator', moderatorRoutes);
+
+// TODO: Remove once UI exists
+seedMegacampaigns();
 
 app.listen(PORT, () => {
     console.log(`Running on port ${PORT}`);
